@@ -1,0 +1,15 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<!-- 이 common.jspf 파일은 web.xml에서 .jsp 확장자 파일이 생성되는 즉시 include되도록 설정되어있다  -->
+<!-- 해당 경로 들을 쓸 때 간단히 쓰기위해 미리 변수로 정의해둔다. -->
+<!-- 내 URL 접근은 ${context}로 가능하다. -->
+<!-- resources 폴더에 있는 css폴더 접근은 ${css}로 가능하다/ -->
+<!-- resources 폴더에 있는 img폴더 접근은 ${img}로 가능하다. -->
+<!-- resources 폴더에 있는 js폴더 접근은 ${img}로 가능하다. -->
+<c:set var="context" value="<%=request.getContextPath() %>" />
+<c:set var="css" value="${context}/resources/css" /> 
+<c:set var="img" value="${context}/resources/img" />
+<c:set var="js" value="${context}/resources" />

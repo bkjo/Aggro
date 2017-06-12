@@ -1,0 +1,59 @@
+@CHARSET "UTF-8";
+
+.mg_auto {
+	margin: 0 auto;
+	
+} /* 가운데 정렬  */
+.w_100pct{
+	width: 100%;
+}
+a:LINK {
+	color: red;
+}
+
+a:VISITED {
+	color: green;
+}
+
+a:HOVER {
+	color: hotpink;
+}
+
+a:ACTIVE {
+	color: #ffff00;
+}
+
+.list_circle {list-style-type: circle;}
+.list_square {list-style-type: square;}
+.list_upper {list-style-type: upper-roman;}
+.list_lower {list-style-type: lower-alpha;}
+/* .list_이미지 {list-style-image: url('*.jpg');}  */
+/* 수직 네비게이션  */
+ul{list-style-type: : none; margin: 0; padding: 0;width: 60px;}
+li a {display: block;}
+li a:HOVER {background-color: #555; color: white;}
+li a:ACTIVE {background-color: #4CAF50; color: white;}
+/* 수평 네비게이션*/
+li { display: inline;}
+
+/* 양식 */
+input[type=text] {width: 100%; padding: 12px 20px; margin: 8px 0; box-sizing : border-box;}
+/* 모서리 */
+border-radius : 4px;
+/* 포커스 */
+input[type=text]:FOCUS {background-color: lightblue}
+input[type=password]:FOCUS {background-color: lightblue}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions 
+PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" 
+"http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+  	<!-- 사용자 페이지 -->
+	<!-- */*.user 혹은 auth/*/*.user URL로 호출될 경우 사용자에게 보여질 원페이지는 layout_user.jsp이다 (디폴트로 설정!) -->
+	<definition name="layout_user" template="/WEB-INF/views/layout/layout_user.jsp">
+		<put-attribute name="header" value=""/>
+		<put-attribute name="content" value=""/>
+		<put-attribute name="footer" value="/WEB-INF/views/global/footer.jsp"/>
+	</definition>
+	<definition name="*/*.user" extends="layout_user">
+		<!-- 위 definition인 layout_user를 상속받았다. footer는 그대로이고 header과 content 부분의 페이지가 아래와 같이 변경된다. -->
+		<!-- URL이 */*.user로 호출된 경우 헤더 페이지와 컨텐츠 페이지는 아래와 같다.  -->
+		<put-attribute name="header" value="/WEB-INF/views/global/header.jsp"/>
+		<put-attribute name="content" value="/WEB-INF/views/{1}/{2}.jsp"/>
+	</definition>
+
+	<!-- 관리자 페이지 -->
+	<definition name="layout_admin" template="/WEB-INF/views/layout/layout_admin.jsp">
+		<put-attribute name="header" value=""/>
+		<put-attribute name="content" value=""/>
+		<put-attribute name="footer" value="/WEB-INF/views/global/footer.jsp"/>
+	</definition>
+	<definition name="*/*.admin" extends="layout_admin">
+		<!-- 위에 definition인 layout_admin를 상속받았다. footer는 그대로이고 header과 content 부분의 페이지가 아래와 같이 변경된다. -->
+		<!-- URL이 */*.admin으로 호출된 경우 헤더 페이지와 컨텐츠 페이지는 아래와 같다.  -->
+		<put-attribute name="header" value="/WEB-INF/views/admin/admin_header.jsp"/>
+		<put-attribute name="content" value="/WEB-INF/views/{1}/{2}.jsp"/>
+	</definition>
+</tiles-definitions>
