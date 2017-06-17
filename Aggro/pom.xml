@@ -270,11 +270,22 @@
           
           <!-- mail-context 의 JavaMailSenderImpl를 인식하기 위한 디펜던시 -->
           <dependency>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-context-support</artifactId>
-          <version>${org.springframework-version}</version>
+	          <groupId>org.springframework</groupId>
+	          <artifactId>spring-context-support</artifactId>
+	          <version>${org.springframework-version}</version>
           </dependency>
+          
+          	<!-- WebChatting 위한 websocket api -->
+			<dependency>
+			    <groupId>javax.websocket</groupId>
+			    <artifactId>javax.websocket-api</artifactId>
+			    <version>1.1</version>
+			    <scope>provided</scope>
+			</dependency>
+          
      </dependencies>
+
+	
 
      <repositories>
           <repository>
