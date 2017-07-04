@@ -274,6 +274,14 @@
           <artifactId>spring-context-support</artifactId>
           <version>${org.springframework-version}</version>
           </dependency>
+          
+         <!-- WebChat 위한 websocket api -->
+         <dependency>
+             <groupId>javax.websocket</groupId>
+             <artifactId>javax.websocket-api</artifactId>
+             <version>1.1</version>
+             <scope>provided</scope>
+         </dependency>
      </dependencies>
 
      <repositories>
