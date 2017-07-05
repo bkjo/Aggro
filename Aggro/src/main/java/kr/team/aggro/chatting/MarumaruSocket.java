@@ -12,11 +12,9 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
+@ServerEndpoint("/marumaruSocket")
+public class MarumaruSocket {
 
-@ServerEndpoint("/invensocket")
-public class InvenSocket {
-
-	
 	private static Set<Session> clients = Collections
 			.synchronizedSet(new HashSet<Session>());
 

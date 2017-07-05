@@ -1,20 +1,42 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!DOCTYPE html>
 
-    <script type="text/javascript">
-    $(document).ready(function(){
-    	$('#inputMessage').focus();
-    	
-    	$("#inputMessage").keydown(function (key) {
-            if (key.keyCode == 13) {
-               $("#sendMessage").click();
-            }
-         });
-    	
-    });
-    
-    var webSocket = new WebSocket('ws://192.168.10.2:8080/main/invensocket');
+<style>
+.text{
+   overflow-x:hidden;
+   overflow-y:auto;
+   width:700px; 
+   height:250px;
+   
+}
+.left{
+   width: 80%;
+   background-color: #ffe6cb;
+   
+}
+.right{
+   width: 80%;
+   margin-left: 20%;
+   background-color: yellow;
+	margin: 3px,3px,3px,3px;
+}
+p {
+    padding-top: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+}
+ 
+</style>
+
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<script type="text/javascript">
+
+    var webSocket = new WebSocket('ws://192.168.0.7:8080/main/invensocket');
     
     webSocket.onerror = function(event) {
       onError(event)
@@ -35,10 +57,10 @@
 
     
     function onMessage(event) {
-    	$('#messageWindow').val($('#messageWindow').val() + event.data + "\n");
+    	$('.text').append("<div class='w3-left-align w3-round-xlarge left'><p>" + event.data + "</p></div>");
     }
     function onOpen(event) {
-    	$("#messageWindow").val("연결성공\n"); 
+    	$(".text").append("<p>연결성공</p>"); 
         webSocket.send("${nickName}님이 접속");
     }
     
@@ -46,45 +68,31 @@
       alert(event.data);
     }
     function send() {
-    	$('#messageWindow').val($('#messageWindow').val() + '${nickName} : ' + $('#inputMessage').val() + "\n");
+    	$('.text').append("<div class='w3-right-align w3-round-xlarge right'><p>${nickName} : "+ $('#inputMessage').val() +"</p></div>");
         webSocket.send("${nickName} : " + $('#inputMessage').val());
         $('#inputMessage').val("");
         $('#inputMessage').focus();
     }
     
-    function disconnect(){
+/*     function disconnect(){
     	webSocket.send("${nickName} 접속해제");
         webSocket.close();
 		window.close();        
     }
-    
-    $(window).bind("beforeunload",function(){
+     */
+/*     $(window).bind("beforeunload",function(){
     	webSocket.send("${nickName}님 접속해제");
     	webSocket.close();
-    });
-   
+    }); */
 </script>
 
-<!--     <fieldset>
-        <textarea id="messageWindow" rows="10" cols="50" readonly="true"></textarea>
-        <br/>
-        <input id="inputMessage" type="text"/>
-        <input type="submit" value="send" onclick="send()" />
-        <input onclick="disconnect()" value="Disconnect" type="button">
 
-    </fieldset>
- -->    
-  <div class="form-group">
-     <div class="col-sm-12">
-        <textarea class="form-control" id="messageWindow" rows="10" cols="50" readonly="true"></textarea>
-     </div>
-      <div class="col-sm-12">
+<div class="w3-container w3-border w3-large myScrollspy text">
+</div>
+
+<div class="col-sm-12 form-group">
         <input id="inputMessage" type="text" class="form-control"/>
         <input type="submit" value="send" onclick="send()" id="sendMessage" class="form-control" />
         <input onclick="disconnect()" value="Disconnect" type="button" class="form-control">
-      </div>
-    </div> 
-
-
-
+</div>
 

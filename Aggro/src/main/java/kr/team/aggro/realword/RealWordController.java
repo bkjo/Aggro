@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import kr.team.aggro.chatting.InvenSocket;
+import kr.team.aggro.chatting.NaverSocket;
 
 /**
  * Handles requests for the application home page.
@@ -37,15 +38,20 @@ public class RealWordController {
 		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" + nickName);
 		session.setAttribute("nickName", nickName);
 
-		kr.team.aggro.chatting.InvenSocket is = new InvenSocket();
-		System.out.println(is.getClients().size());
+		InvenSocket is = new InvenSocket();
 		session.setAttribute("invenCount", is.getClients().size());
+		
+		
+		NaverSocket ns = new NaverSocket();
+		session.setAttribute("naverCount", ns.getClients().size());
 		
 		
 		Document daumDocument = Jsoup.connect("http://m.daum.net").get();
 		Document naverDocument = Jsoup.connect("http://www.naver.com?mobile").get();
 		Document invenDocument = Jsoup.connect("http://m.inven.co.kr").get();
 		Document marumaruDocument = Jsoup.connect("http://marumaru.in").get();
+		Document menupanDocument = Jsoup.connect("http://www.menupan.com/restaurant/bestrest/bestrest.asp?pt=rt/").get();
+		Document gomtvDocument = Jsoup.connect("http://guide.gomtv.com/tv/boxoffice.gom").get();
 		
 		ArrayList<RealWordDTO> dataList = new ArrayList<RealWordDTO>();
 		
@@ -99,7 +105,30 @@ public class RealWordController {
 			}
             dataMap.put("marumaruDataList", dataList);
         }
-        if (naverDocument != null || daumDocument != null || invenDocument != null || marumaruDocument != null) {
+        dataList = new ArrayList<RealWordDTO>();
+        if (null != menupanDocument) {
+        	elements = menupanDocument.select("div.rankingList > ul.list > li");
+			for (int i = 0; i < 10; i++) {
+				rsDTO = new RealWordDTO();
+				rsDTO.setWord(elements.get(i).select("p.listName").text() + "<" + elements.get(i).select("p.listArea").text() + ">");
+				rsDTO.setRank(i + 1);
+				dataList.add(rsDTO);
+			}
+            dataMap.put("menupanDataList", dataList);
+        }
+        dataList = new ArrayList<RealWordDTO>();
+        if (null != gomtvDocument) {
+        	elements = gomtvDocument.select("div.box_data_wrap > div.box_data");
+        	int j=1;
+			for (int i = 10; i < 20; i++) {
+				rsDTO = new RealWordDTO();
+				rsDTO.setWord(elements.get(i).select("dl > dt").text());
+				rsDTO.setRank(j++);
+				dataList.add(rsDTO);
+			}
+            dataMap.put("gomtvDataList", dataList);
+        }
+        if (naverDocument != null || daumDocument != null || invenDocument != null || marumaruDocument != null || menupanDocument != null || gomtvDocument != null) {
             model.addAttribute("dataList", dataMap);
             
         	return "RealWord/RealWord.user";
@@ -149,17 +178,17 @@ public class RealWordController {
 //		
 //	}
 	
-	@RequestMapping(value = "/inven/chat", method = RequestMethod.POST)
-	public String invenChat(HttpSession session, Model model){
-		String nickName = (String) session.getAttribute("nickName");
-		System.out.println(nickName);
-		return "Chatting/InvenChat.user";
-	}
-//	
-//	@RequestMapping(value = "/chat2")
-//	public String chat2(Model model){
-//		return "chat2";
-//		
+//	@RequestMapping(value = "/inven/chat", method = RequestMethod.POST)
+//	public String invenChat(HttpSession session, Model model){
+//		String nickName = (String) session.getAttribute("nickName");
+//		System.out.println(nickName);
+//		return "Chatting/InvenChat.user";
 //	}
+//	
+	@RequestMapping(value = "/modal")
+	public String modal(Model model){
+		return "Chatting/modal2";
+		
+	}
 //	
 }

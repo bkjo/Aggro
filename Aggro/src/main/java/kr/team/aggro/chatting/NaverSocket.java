@@ -12,11 +12,9 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
+@ServerEndpoint("/naversocket")
+public class NaverSocket {
 
-@ServerEndpoint("/invensocket")
-public class InvenSocket {
-
-	
 	private static Set<Session> clients = Collections
 			.synchronizedSet(new HashSet<Session>());
 
