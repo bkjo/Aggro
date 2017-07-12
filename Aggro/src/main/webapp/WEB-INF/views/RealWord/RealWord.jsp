@@ -34,110 +34,135 @@ p {
 
 <script type="text/javascript">
 $(document).ready(function(){
+
+			var invenServer = new WebSocket("ws://192.168.0.7:8080/main/invensocket");
+			
+			invenServer.onopen = function(event){
+				onOpen(event)
+			}
+			invenServer.onmessage = function(event){
+				onMessage(event)
+			}
+			invenServer.onerror = function(event) {
+				onError(event);
+			}
+			
+			function onOpen(event){
+				$('#daumChat').on('click',function(){
+					$('#daumText > div').remove();
+						invenServer.send("daumChat | ${nickName}님이 접속");
+						$("#daumText").append("<div>연결성공</div>");
+				});
+				$('#naverChat').on('click',function(){
+					$('#naverText > div').remove();
+					invenServer.send("naverChat | ${nickName}님이 접속");
+					$("#naverText").append("<div>연결성공</div>");
+				});
+				$('#invenChat').on('click',function(){
+					$('#invenText > div').remove();
+					invenServer.send("invenChat | ${nickName}님이 접속");
+					$("#invenText").append("<div>연결성공</div>");
+				});
+			}
+		
+			function onMessage(event){
+				var message = event.data.split("|");
+				var room = message[0].trim();
+				var text = message[1];
+				switch(room){
+				case "daumChat":
+					$('#daumText').append("<div class='w3-left-align w3-round-xlarge left'><p>" + text + "</p></div>");	
+					$('#daumText').scrollTop($('#daumText')[0].scrollHeight);
+					break;
+				case "naverChat":
+					$('#naverText').append("<div class='w3-left-align w3-round-xlarge left'><p>" + text + "</p></div>");	
+					$('#naverText').scrollTop($('#naverText')[0].scrollHeight);
+					break;
+				case "invenChat":
+					$('#invenText').append("<div class='w3-left-align w3-round-xlarge left'><p>" + text + "</p></div>");	
+					$('#invenText').scrollTop($('#invenText')[0].scrollHeight);
+					break;
+				}
+			};
+			
+			function onError(event){
+				alert(event.data);
+			}
 	
-	var invenServer = new WebSocket("ws://192.168.0.7:8080/main/invensocket");
-	
-	
-		invenServer.onopen = function(evt){
-			$("#invenModal .text").append("<div>연결성공</div>");
-			invenServer.send("${nickName}님이 접속");
-		};
-		invenServer.onmessage = function(evt){
-			$('#invenModal .text').append("<div class='w3-left-align w3-round-xlarge left'><p>" + evt.data + "</p></div>");
-		};
-		invenServer.onclose = function(evt){
-			invenServer.onInvenClose(evt);
-		};
-		invenServer.onerror = function(evt) {
-			alert(evt.data);
-		};
-	
-	
- 	$('#invenMessage').on('click',function(){
- 		if($('#invenModal #inputMessage').val() != ""){
-	 		invenServer.send("${nickName} : " + $('#invenModal #inputMessage').val());
-			$('#invenModal .text').append("<div class='w3-right-align w3-round-xlarge right'><p>${nickName} : "+ $('#invenModal #inputMessage').val() +"</p></div>");
-	        $('#invenModal #inputMessage').val("");
-	        $('#invenModal #inputMessage').focus();
+ 	$('#daumMessage').on('click',function(){
+ 		if($('#dauminputMessage').val() != ""){
+	 		invenServer.send("daumChat | ${nickName} : " + $('#dauminputMessage').val());
+			$('#daumText').append("<div class='w3-right-align w3-round-xlarge right'><p>나 : "+ $('#dauminputMessage').val() +"</p></div>");
+			$('#dauminputMessage').val("");
+	        $('#dauminputMessage').focus();
+	        $('#daumText').scrollTop($('#daumText')[0].scrollHeight);
  		}
-        
- 	}); 
-	
-	$("#invenchat").on('click',function(){
-		$('#invenModal .text > div').remove();
-	});
-	
- 	$("#invenModal #inputMessage").keydown(function (key) {
+ 	});
+ 	
+ 	$('#naverMessage').on('click',function(){
+ 		if($('#naverinputMessage').val() != ""){
+	 		invenServer.send("naverChat | ${nickName} : " + $('#naverinputMessage').val());
+			$('#naverText').append("<div class='w3-right-align w3-round-xlarge right'><p>나 : "+ $('#naverinputMessage').val() +"</p></div>");
+			$('#naverinputMessage').val("");
+	        $('#naverinputMessage').focus();
+	        $('#naverText').scrollTop($('#naverText')[0].scrollHeight);
+ 		}
+ 	});
+ 	
+ 	$('#invenMessage').on('click',function(){
+ 		if($('#inveninputMessage').val() != ""){
+	 		invenServer.send("invenChat | ${nickName} : " + $('#inveninputMessage').val());
+			$('#invenText').append("<div class='w3-right-align w3-round-xlarge right'><p>나 : "+ $('#inveninputMessage').val() +"</p></div>");
+			$('#inveninputMessage').val("");
+	        $('#inveninputMessage').focus();
+	        $('#invenText').scrollTop($('#invenText')[0].scrollHeight);
+ 		}
+ 	});
+ 	
+ 	$("#dauminputMessage").keydown(function (key) {
+        if (key.keyCode == 13) {
+           $("#daumMessage").click();
+        }
+     });
+ 	
+ 	$("#naverinputMessage").keydown(function (key) {
+        if (key.keyCode == 13) {
+           $("#naverMessage").click();
+        }
+     });
+ 
+ 	$("#inveninputMessage").keydown(function (key) {
         if (key.keyCode == 13) {
            $("#invenMessage").click();
         }
      });
  	
-	
-	$('#invenClose').on('click', function(){
-		invenServer.send("${nickName}님 접속해제");
-		$('#invenModal .text > div').remove();
+	$('#daumClose').on('click', function(){
+		invenServer.send("daumChat | ${nickName}님 접속해제");
+		$('#daumText > div').remove();
 	});
  	
+	$('#naverClose').on('click', function(){
+		invenServer.send("naverChat | ${nickName}님 접속해제");
+		$('#naverText > div').remove();
+	});
+	
+	$('#invenClose').on('click', function(){
+		invenServer.send("invenChat | ${nickName}님 접속해제");
+		$('#invenText > div').remove();
+	});
+	
     $(window).bind("beforeunload",function(){
-    	invenServer.send("${nickName}님 접속해제");
+    	invenServer.send("daumChat | ${nickName}님 접속해제");
+    	invenServer.send("naverChat | ${nickName}님 접속해제");
+    	invenServer.send("invenChat | ${nickName}님 접속해제");
     	invenServer.close();
     });
 	
-	/////////////////////////////////////////////////////// naver  ///////////
-	
-	/* var naverServer = new WebSocket("ws://192.168.0.7:8080/main/naversocket");
-	
-	
-	// naver server
-	naverServer.onopen = function(evt){
-		$("#naverModal .text").append("<div>연결성공</div>");
-		naverServer.send("${nickName}님이 접속");
-	};
-	naverServer.onmessage = function(evt){
-		$('naverModal .text').append("<div class='w3-left-align w3-round-xlarge left'><p>" + evt.data + "</p></div>");
-	};
-	naverServer.onclose = function(evt){
-		naverServer.onInvenClose(evt);
-	};
-	naverServer.onerror = function(evt) {
-		alert(evt.data);
-	};
-	
- 	$('#naverMessage').on('click',function(){
- 		if($('#naverModal #inputMessage').val() != ""){
- 			naverServer.send("${nickName} : " + $('#naverModal #inputMessage').val());
-			$('#naverModal .text').append("<div class='w3-right-align w3-round-xlarge right'><p>${nickName} : "+ $('#naverModal #inputMessage').val() +"</p></div>");
-	        $('#naverModal #inputMessage').val("");
-	        $('#naverModal #inputMessage').focus();
- 		}
-        
- 	}); 
-	
- 	$("#naverModal #inputMessage").keydown(function (key) {
-        if (key.keyCode == 13) {
-           $("#naverMessage").click();
-        }
-     });
- 	
-	
-	$('#naverClose').on('click', function(){
-		naverServer.send("${nickName}님 접속해제");
-		$('#naverModal .text > div').remove();		
-	}); */
 	
 });
 
 </script>
-<center>
-<form name="invenfrm" id="invenfrm" action="${context}/realword/inven/chat" method="post" target="popup_window">
-					<button type="button" class="btn btn-info btn-lg" id="invenchat" data-toggle="modal" data-target="#invenModal" data-backdrop="static" data-keyboard="false">
-	  					<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> 채팅방 입장
-	  					<span class="badge">${invenCount}</span>
-					</button>
-					</form>
-
-</center>
 
 
 <div class="row">
@@ -157,6 +182,16 @@ $(document).ready(function(){
 					<td>${daumData.word }</td>
 				</tr>
 			</c:forEach>
+			 <tr align="center">
+					<td colspan="2">
+					<form name="daumfrm" id="daumfrm" action="${context}/realword/inven/chat" method="post" target="popup_window">
+					<button type="button" class="btn btn-info btn-lg" id="daumChat" data-toggle="modal" data-target="#daumModal" data-backdrop="static" data-keyboard="false">
+	  					<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> 채팅방 입장
+	  					<span class="badge" id="daumCount">0</span>
+					</button>
+					</form>
+					</td>
+				</tr>
 		</table>
       </div>
     </div>
@@ -178,16 +213,16 @@ $(document).ready(function(){
 						<td>${naverData.word }</td>
 					</tr>
 				</c:forEach>
-				<%-- <tr align="center">
+				 <tr align="center">
 					<td colspan="2">
-					<form name="invenfrm" id="invenfrm" action="${context}/realword/inven/chat" method="post" target="popup_window">
-					<button type="button" class="btn btn-info btn-lg" id="naverchat" data-toggle="modal" data-target="#naverModal" data-backdrop="static" data-keyboard="false">
+					<form name="naverfrm" id="naverfrm" action="${context}/realword/inven/chat" method="post" target="popup_window">
+					<button type="button" class="btn btn-info btn-lg" id="naverChat" data-toggle="modal" data-target="#naverModal" data-backdrop="static" data-keyboard="false">
 	  					<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> 채팅방 입장
-	  					<span class="badge">${naverCount}</span>
+	  					<span class="badge" id="naverCount">0</span>
 					</button>
 					</form>
 					</td>
-				</tr> --%>
+				</tr> 
 		  </table>
       </div>
     </div>
@@ -209,16 +244,16 @@ $(document).ready(function(){
 					<td>${invenData.word }</td>
 				</tr>
 			</c:forEach>
-				<%-- <tr align="center">
+				<tr align="center">
 					<td colspan="2">
 					<form name="invenfrm" id="invenfrm" action="${context}/realword/inven/chat" method="post" target="popup_window">
-					<button type="button" class="btn btn-info btn-lg" id="invenchat" data-toggle="modal" data-target="#invenModal" data-backdrop="static" data-keyboard="false">
+					<button type="button" class="btn btn-info btn-lg" id="invenChat" data-toggle="modal" data-target="#invenModal" data-backdrop="static" data-keyboard="false">
 	  					<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> 채팅방 입장
-	  					<span class="badge">${invenCount}</span>
+	  					<span class="badge" id="invenCount">0</span>
 					</button>
 					</form>
 					</td>
-				</tr> --%>
+				</tr>
 		</table>
       </div>
     </div>
@@ -293,68 +328,77 @@ $(document).ready(function(){
   
 </div>
 
-  <!-- naver Modal -->
- <!--   <div class="modal fade" id="naverModal" role="dialog">
+  <!-- daum Modal -->
+  <div class="modal fade" id="daumModal" role="dialog">
     <div class="modal-dialog">
-    
-      Modal content
-      <div class="modal-content">
-      
-        <div class="modal-header">
-          <h4 class="modal-title">네이버 채팅방</h4>
-        </div>
-        <div class="modal-body">
-			
-
-<div class="w3-container w3-border w3-large myScrollspy text">
-
-</div>
-
-<div class="form-group">
-        <input id="inputMessage" type="text" class="form-control"/>
-</div>
-
-
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-default" onclick="send()" id="naverMessage">send</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal" onclick="disconnect()">Close</button>
-         </div>
-      </div>
-      
-    </div>
-  </div> -->
-
-
-
-  <!-- inven Modal -->
-  <div class="modal fade" id="invenModal" role="dialog">
-    <div class="modal-dialog">
-    
       <!-- Modal content-->
       <div class="modal-content">
-      
         <div class="modal-header">
-          <h4 class="modal-title">채팅방</h4>
+          <h4 class="modal-title">Daum 채팅방</h4>
+        </div>
+      	<div class="modal-body">
+			<div class="w3-container w3-border w3-large text" id="daumText">
+			</div>
+			<div class="form-group">
+        		<input id="dauminputMessage" type="text" class="form-control"/>
+			</div>
+      	</div>
+      	<div class="modal-footer">
+          <button type="submit" class="btn btn-default" id="daumMessage">send</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" id="daumClose">Close</button>
+      	</div>
+      </div>
+    </div>
+  </div>
+  
+  
+  <!-- ////////////////////////////////////////////////////////////////////////////////// -->
+
+   <!-- naver Modal -->
+  <div class="modal fade" id="naverModal" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Naver 채팅방</h4>
         </div>
         <div class="modal-body">
-			
+			<div class="w3-container w3-border w3-large text" id="naverText">
+			</div>
+			<div class="form-group">
+		        <input id="naverinputMessage" type="text" class="form-control"/>
+			</div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-default" id="naverMessage">send</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" id="naverClose">Close</button>
+         </div>
+      </div>
+    </div>
+  </div>
+  
+  
+    <!-- ////////////////////////////////////////////////////////////////////////////////// -->
 
-<div class="w3-container w3-border w3-large myScrollspy text">
-
-</div>
-
-<div class="form-group">
-        <input id="inputMessage" type="text" class="form-control"/>
-</div>
-
-
+   <!-- inven Modal -->
+  <div class="modal fade" id="invenModal" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Inven 채팅방</h4>
+        </div>
+        <div class="modal-body">
+			<div class="w3-container w3-border w3-large text" id="invenText">
+			</div>
+			<div class="form-group">
+		        <input id="inveninputMessage" type="text" class="form-control"/>
+			</div>
         </div>
         <div class="modal-footer">
           <button type="submit" class="btn btn-default" id="invenMessage">send</button>
           <button type="button" class="btn btn-default" data-dismiss="modal" id="invenClose">Close</button>
          </div>
       </div>
-      
     </div>
   </div>
