@@ -39,11 +39,8 @@ public class RealWordController {
 		session.setAttribute("nickName", nickName);
 
 		InvenSocket is = new InvenSocket();
-		session.setAttribute("invenCount", is.getClients().size());
+		session.setAttribute("invenCount", (is.getClients().size())+1);
 		
-		
-		NaverSocket ns = new NaverSocket();
-		session.setAttribute("naverCount", ns.getClients().size());
 		
 		
 		Document daumDocument = Jsoup.connect("http://m.daum.net").get();

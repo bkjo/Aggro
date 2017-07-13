@@ -63,6 +63,21 @@ $(document).ready(function(){
 					invenServer.send("invenChat | ${nickName}님이 접속");
 					$("#invenText").append("<div>연결성공</div>");
 				});
+				$('#maruChat').on('click',function(){
+					$('#maruText > div').remove();
+					invenServer.send("maruChat | ${nickName}님이 접속");
+					$("#maruText").append("<div>연결성공</div>");
+				});
+				$('#menuChat').on('click',function(){
+					$('#menuText > div').remove();
+					invenServer.send("menuChat | ${nickName}님이 접속");
+					$("#menuText").append("<div>연결성공</div>");
+				});
+				$('#gomChat').on('click',function(){
+					$('#gomText > div').remove();
+					invenServer.send("gomChat | ${nickName}님이 접속");
+					$("#gomText").append("<div>연결성공</div>");
+				});
 			}
 		
 			function onMessage(event){
@@ -81,6 +96,18 @@ $(document).ready(function(){
 				case "invenChat":
 					$('#invenText').append("<div class='w3-left-align w3-round-xlarge left'><p>" + text + "</p></div>");	
 					$('#invenText').scrollTop($('#invenText')[0].scrollHeight);
+					break;
+				case "maruChat":
+					$('#maruText').append("<div class='w3-left-align w3-round-xlarge left'><p>" + text + "</p></div>");	
+					$('#maruText').scrollTop($('#maruText')[0].scrollHeight);
+					break;
+				case "menuChat":
+					$('#menuText').append("<div class='w3-left-align w3-round-xlarge left'><p>" + text + "</p></div>");	
+					$('#menuText').scrollTop($('#menuText')[0].scrollHeight);
+					break;
+				case "gomChat":
+					$('#gomText').append("<div class='w3-left-align w3-round-xlarge left'><p>" + text + "</p></div>");	
+					$('#gomText').scrollTop($('#gomText')[0].scrollHeight);
 					break;
 				}
 			};
@@ -119,6 +146,36 @@ $(document).ready(function(){
  		}
  	});
  	
+ 	$('#maruMessage').on('click',function(){
+ 		if($('#maruinputMessage').val() != ""){
+	 		invenServer.send("maruChat | ${nickName} : " + $('#maruinputMessage').val());
+			$('#maruText').append("<div class='w3-right-align w3-round-xlarge right'><p>나 : "+ $('#maruinputMessage').val() +"</p></div>");
+			$('#maruinputMessage').val("");
+	        $('#maruinputMessage').focus();
+	        $('#maruText').scrollTop($('#maruText')[0].scrollHeight);
+ 		}
+ 	});
+ 	
+ 	$('#menuMessage').on('click',function(){
+ 		if($('#menuinputMessage').val() != ""){
+	 		invenServer.send("menuChat | ${nickName} : " + $('#menuinputMessage').val());
+			$('#menuText').append("<div class='w3-right-align w3-round-xlarge right'><p>나 : "+ $('#menuinputMessage').val() +"</p></div>");
+			$('#menuinputMessage').val("");
+	        $('#menuinputMessage').focus();
+	        $('#menuText').scrollTop($('#menuText')[0].scrollHeight);
+ 		}
+ 	});
+
+ 	$('#gomMessage').on('click',function(){
+ 		if($('#gominputMessage').val() != ""){
+	 		invenServer.send("gomChat | ${nickName} : " + $('#gominputMessage').val());
+			$('#gomText').append("<div class='w3-right-align w3-round-xlarge right'><p>나 : "+ $('#gominputMessage').val() +"</p></div>");
+			$('#gominputMessage').val("");
+	        $('#gominputMessage').focus();
+	        $('#gomText').scrollTop($('#gomText')[0].scrollHeight);
+ 		}
+ 	});
+ 	
  	$("#dauminputMessage").keydown(function (key) {
         if (key.keyCode == 13) {
            $("#daumMessage").click();
@@ -137,6 +194,24 @@ $(document).ready(function(){
         }
      });
  	
+ 	$("#maruinputMessage").keydown(function (key) {
+        if (key.keyCode == 13) {
+           $("#maruMessage").click();
+        }
+     });
+
+ 	$("#menuinputMessage").keydown(function (key) {
+        if (key.keyCode == 13) {
+           $("#menuMessage").click();
+        }
+     });
+
+ 	$("#gominputMessage").keydown(function (key) {
+        if (key.keyCode == 13) {
+           $("#gomMessage").click();
+        }
+     });
+ 	
 	$('#daumClose').on('click', function(){
 		invenServer.send("daumChat | ${nickName}님 접속해제");
 		$('#daumText > div').remove();
@@ -152,10 +227,28 @@ $(document).ready(function(){
 		$('#invenText > div').remove();
 	});
 	
+	$('#maruClose').on('click', function(){
+		invenServer.send("maruChat | ${nickName}님 접속해제");
+		$('#maruText > div').remove();
+	});
+
+	$('#menuClose').on('click', function(){
+		invenServer.send("menuChat | ${nickName}님 접속해제");
+		$('#menuText > div').remove();
+	});
+
+	$('#gomClose').on('click', function(){
+		invenServer.send("gomChat | ${nickName}님 접속해제");
+		$('#gomText > div').remove();
+	});
+	
     $(window).bind("beforeunload",function(){
     	invenServer.send("daumChat | ${nickName}님 접속해제");
     	invenServer.send("naverChat | ${nickName}님 접속해제");
     	invenServer.send("invenChat | ${nickName}님 접속해제");
+    	invenServer.send("maruChat | ${nickName}님 접속해제");
+    	invenServer.send("menuChat | ${nickName}님 접속해제");
+    	invenServer.send("gomChat | ${nickName}님 접속해제");
     	invenServer.close();
     });
 	
@@ -164,7 +257,7 @@ $(document).ready(function(){
 
 </script>
 
-
+	<button type="button" class="btn btn-info navbar-btn">현재 접속자 ${invenCount}명</button>
 <div class="row">
   <div class="col-sm-6 col-md-4">
     <div class="thumbnail">
@@ -179,7 +272,7 @@ $(document).ready(function(){
 			<c:forEach items="${dataList.daumDataList}" var="daumData">
 		  	  <tr>
 					<td>${daumData.rank }</td>
-					<td>${daumData.word }</td>
+					<td><a href="http://search.daum.net/search?w=tot&DA=YZR&t__nil_searchbox=btn&sug=&sugo=&q=${daumData.word }">${daumData.word }</a></td>
 				</tr>
 			</c:forEach>
 			 <tr align="center">
@@ -187,7 +280,6 @@ $(document).ready(function(){
 					<form name="daumfrm" id="daumfrm" action="${context}/realword/inven/chat" method="post" target="popup_window">
 					<button type="button" class="btn btn-info btn-lg" id="daumChat" data-toggle="modal" data-target="#daumModal" data-backdrop="static" data-keyboard="false">
 	  					<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> 채팅방 입장
-	  					<span class="badge" id="daumCount">0</span>
 					</button>
 					</form>
 					</td>
@@ -210,7 +302,7 @@ $(document).ready(function(){
 				<c:forEach items="${dataList.naverDataList}" var="naverData">
 					<tr>
 						<td>${naverData.rank }</td>
-						<td>${naverData.word }</td>
+						<td><a href="https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=1&ie=utf8&query=${naverData.word }">${naverData.word }</a></td>
 					</tr>
 				</c:forEach>
 				 <tr align="center">
@@ -218,7 +310,6 @@ $(document).ready(function(){
 					<form name="naverfrm" id="naverfrm" action="${context}/realword/inven/chat" method="post" target="popup_window">
 					<button type="button" class="btn btn-info btn-lg" id="naverChat" data-toggle="modal" data-target="#naverModal" data-backdrop="static" data-keyboard="false">
 	  					<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> 채팅방 입장
-	  					<span class="badge" id="naverCount">0</span>
 					</button>
 					</form>
 					</td>
@@ -241,7 +332,7 @@ $(document).ready(function(){
 			<c:forEach items="${dataList.invenDataList}" var="invenData">
 				<tr>
 					<td>${invenData.rank }</td>
-					<td>${invenData.word }</td>
+					<td><a href="https://www.google.co.kr/search?q=${invenData.word }">${invenData.word }</a></td>
 				</tr>
 			</c:forEach>
 				<tr align="center">
@@ -249,7 +340,6 @@ $(document).ready(function(){
 					<form name="invenfrm" id="invenfrm" action="${context}/realword/inven/chat" method="post" target="popup_window">
 					<button type="button" class="btn btn-info btn-lg" id="invenChat" data-toggle="modal" data-target="#invenModal" data-backdrop="static" data-keyboard="false">
 	  					<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> 채팅방 입장
-	  					<span class="badge" id="invenCount">0</span>
 					</button>
 					</form>
 					</td>
@@ -272,10 +362,18 @@ $(document).ready(function(){
 			<c:forEach items="${dataList.marumaruDataList}" var="marumaruData">
 				<tr>
 					<td>${marumaruData.rank }</td>
-					<td>${marumaruData.word }</td>
+					<td><a href="http://marumaru.in/?r=home&mod=search&keyword=${marumaruData.word }">${marumaruData.word }</a></td>
 				</tr>
 			</c:forEach>
-			
+			<tr align="center">
+					<td colspan="2">
+					<form name="marufrm" id="marufrm" action="${context}/realword/inven/chat" method="post" target="popup_window">
+					<button type="button" class="btn btn-info btn-lg" id="maruChat" data-toggle="modal" data-target="#maruModal" data-backdrop="static" data-keyboard="false">
+	  					<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> 채팅방 입장
+					</button>
+					</form>
+					</td>
+				</tr>
 		</table>
       </div>
     </div>
@@ -295,9 +393,18 @@ $(document).ready(function(){
 			<c:forEach items="${dataList.menupanDataList}" var="menupanData">
 				<tr>
 					<td>${menupanData.rank }</td>
-					<td>${menupanData.word }</td>
+					<td><a href="https://www.google.co.kr/search?q=${menupanData.word }">${menupanData.word }</a></td>
 				</tr>
 			</c:forEach>
+			<tr align="center">
+					<td colspan="2">
+					<form name="menufrm" id="menufrm" action="${context}/realword/inven/chat" method="post" target="popup_window">
+					<button type="button" class="btn btn-info btn-lg" id="menuChat" data-toggle="modal" data-target="#menuModal" data-backdrop="static" data-keyboard="false">
+	  					<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> 채팅방 입장
+					</button>
+					</form>
+					</td>
+				</tr>
 		</table>
       </div>
     </div>
@@ -317,9 +424,18 @@ $(document).ready(function(){
 			<c:forEach items="${dataList.gomtvDataList}" var="gomtvData">
 				<tr>
 					<td>${gomtvData.rank }</td>
-					<td>${gomtvData.word }</td>
+					<td><a href="https://www.google.co.kr/search?q=${gomtvData.word }">${gomtvData.word }</a></td>
 				</tr>
 			</c:forEach>
+			<tr align="center">
+					<td colspan="2">
+					<form name="gomfrm" id="gomfrm" action="${context}/realword/inven/chat" method="post" target="popup_window">
+					<button type="button" class="btn btn-info btn-lg" id="gomChat" data-toggle="modal" data-target="#gomModal" data-backdrop="static" data-keyboard="false">
+	  					<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> 채팅방 입장
+					</button>
+					</form>
+					</td>
+				</tr>
 		</table>
       </div>
     </div>
@@ -402,3 +518,82 @@ $(document).ready(function(){
       </div>
     </div>
   </div>
+   
+  
+    <!-- ////////////////////////////////////////////////////////////////////////////////// -->
+
+   <!-- marumaru Modal -->
+  <div class="modal fade" id="maruModal" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Marumaru 채팅방</h4>
+        </div>
+        <div class="modal-body">
+			<div class="w3-container w3-border w3-large text" id="maruText">
+			</div>
+			<div class="form-group">
+		        <input id="maruinputMessage" type="text" class="form-control"/>
+			</div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-default" id="maruMessage">send</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" id="maruClose">Close</button>
+         </div>
+      </div>
+    </div>
+  </div>
+    
+  
+    <!-- ////////////////////////////////////////////////////////////////////////////////// -->
+
+   <!-- menupan Modal -->
+  <div class="modal fade" id="menuModal" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Menupan 채팅방</h4>
+        </div>
+        <div class="modal-body">
+			<div class="w3-container w3-border w3-large text" id="menuText">
+			</div>
+			<div class="form-group">
+		        <input id="menuinputMessage" type="text" class="form-control"/>
+			</div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-default" id="menuMessage">send</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" id="menuClose">Close</button>
+         </div>
+      </div>
+    </div>
+  </div>
+     
+  
+    <!-- ////////////////////////////////////////////////////////////////////////////////// -->
+
+   <!-- GomTV Modal -->
+  <div class="modal fade" id="gomModal" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">GomTV 채팅방</h4>
+        </div>
+        <div class="modal-body">
+			<div class="w3-container w3-border w3-large text" id="gomText">
+			</div>
+			<div class="form-group">
+		        <input id="gominputMessage" type="text" class="form-control"/>
+			</div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-default" id="gomMessage">send</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" id="gomClose">Close</button>
+         </div>
+      </div>
+    </div>
+  </div>
+  
